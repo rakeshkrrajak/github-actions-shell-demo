@@ -1,0 +1,48 @@
+name: PR Shell Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+
+  shell-test:
+    name: Shell Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make scripts executable
+        run: chmod +x scripts/*.sh tests/*.sh
+
+      - name: Run shell tests
+        run: ./tests/test_hello.sh
+
+  shell-lint:
+    name: Shell Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Run shellcheck
+        run: shellcheck scripts/*.sh
+
+  shell-security:
+    name: Security Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for dangerous commands
+        run: |
+          if grep -R "rm -rf /" scripts; then
+            echo "Dangerous command found!"
+            exit 1
+          fi
+          echo "Security check passed"
+
