@@ -15,7 +15,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Make scripts executable
-        run: chmod +x scripts/*.sh tests/*.sh
+        run: |
+          chmod +x scripts/*.sh || true
+          chmod +x tests/*.sh || true
 
       - name: Run shell tests
         run: ./tests/test_hello.sh
